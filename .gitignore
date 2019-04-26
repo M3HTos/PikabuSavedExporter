@@ -1,0 +1,5 @@
+# Prerequisites
+saved
+.idea
+__pycache__
+geckodriver.log
