@@ -113,19 +113,22 @@ class Scrapper:
         while True:
             for story_div in self.driver.find_elements_by_class_name(
                     "story__main"):
-                if "story__placeholder" in story_div.get_attribute("class"):
-                    continue
                 try:
-                    story_div.find_element_by_class_name("story__sponsor")
-                except NoSuchElementException:
-                    pass
-                else:
+                    if "story__placeholder" in story_div.get_attribute("class"):
+                        continue
+                    try:
+                        story_div.find_element_by_class_name("story__sponsor")
+                    except NoSuchElementException:
+                        pass
+                    else:
+                        continue
+                    a = story_div.find_element_by_class_name(
+                        "story__title-link")
+                    post_url = a.get_attribute("href")
+                    if post_url not in self.queue[self.cur_cat]:
+                        self.queue[self.cur_cat].append(post_url)
+                except Exception:
                     continue
-                a = story_div.find_element_by_class_name(
-                    "story__title-link")
-                post_url = a.get_attribute("href")
-                if post_url not in self.queue[self.cur_cat]:
-                    self.queue[self.cur_cat].append(post_url)
             if self.driver.find_element_by_class_name(
                     "stories-feed__message").is_displayed():
                 break
