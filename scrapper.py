@@ -60,16 +60,13 @@ class Scrapper:
     def set_driver_type(self, driver):
         if driver == "Mozilla":  # Firefox 66.0.3 (моя версия)
             self.driver = webdriver.Firefox(
-                options=self.options,
-                executable_path="drivers/Mozilla.exe")
+                options=self.options)
         elif driver == "Opera":  # Opera 60
             self.driver = webdriver.Opera(
-                options=self.options,
-                executable_path="drivers/Opera.exe")
+                options=self.options)
         elif driver == "Chrome":  # Chrome 74
             self.driver = webdriver.Chrome(
-                options=self.options,
-                executable_path="drivers/Chrome.exe")
+                options=self.options)
 
     @staticmethod
     def create_directory(path, name):
@@ -102,7 +99,7 @@ class Scrapper:
         while True:
             time.sleep(1)
             try:
-                self.driver.find_element_by_class_name("player_overlay")
+                self.driver.find_element(By.CLASS_NAME, "player_overlay")
             except NoSuchElementException:
                 break
 
@@ -111,25 +108,25 @@ class Scrapper:
         WebDriverWait(self.driver, 3).until(EC.presence_of_element_located((
             By.CLASS_NAME, 'main__inner')))
         while True:
-            for story_div in self.driver.find_elements_by_class_name(
+            for story_div in self.driver.find_elements(By.CLASS_NAME,
                     "story__main"):
                 try:
                     if "story__placeholder" in story_div.get_attribute("class"):
                         continue
                     try:
-                        story_div.find_element_by_class_name("story__sponsor")
+                        story_div.find_element(By.CLASS_NAME, "story__sponsor")
                     except NoSuchElementException:
                         pass
                     else:
                         continue
-                    a = story_div.find_element_by_class_name(
+                    a = story_div.find_element(By.CLASS_NAME,
                         "story__title-link")
                     post_url = a.get_attribute("href")
                     if post_url not in self.queue[self.cur_cat]:
                         self.queue[self.cur_cat].append(post_url)
                 except Exception:
                     continue
-            if self.driver.find_element_by_class_name(
+            if self.driver.find_element(By.CLASS_NAME,
                     "stories-feed__message").is_displayed():
                 break
             else:
